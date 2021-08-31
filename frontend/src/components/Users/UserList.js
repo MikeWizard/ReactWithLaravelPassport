@@ -12,26 +12,33 @@ import {
   Link,
   useRouteMatch,
   useParams,
+  NavLink
 } from "react-router-dom";
 const Users = (props) => {
   const AuthCtx = useContext(AuthContext);
   const [users, setUsers] = React.useState([]);
   React.useEffect(() => {
-    apiClient
-      .get("/api/user")
-      .then((response) => {
-        setUsers(response.data);
-      })
-      .catch((error) => console.error(error));
+    // console.log(AuthCtx.token.token);
+    if (AuthCtx.isAdmin()) {
+      const config = {
+        headers: { Authorization: `Bearer ${AuthCtx.token.token}` }
+      };
+      apiClient
+        .get("/api/users/list",config)
+        .then((response) => {
+          setUsers(response.data.data);
+        })
+        .catch((error) => console.error(error));
+    }
   }, []);
-  const userList = users.map((user) => <li key={user.id}>{user.title}</li>);
+  let match = useRouteMatch();
+  const userList = users.map((user) => <li key={user.id}>{user.name}( {user.email} )<NavLink to={`${match.path}/${user.id}`}>View</NavLink> | <NavLink to={`${match.path}/${user.id}/edit`}>Edit</NavLink> | <NavLink to={`${match.path}/${user.id}/delete`}>Delete</NavLink></li>);
   let output = <div>You are not logged in.</div>;
   if (AuthCtx.isAdmin()) {
     output = <ul>{userList}</ul>;
   }
   let form = <UserForm />;
 
-  let match = useRouteMatch();
   // console.log(AuthCtx.token);
   return (
     <Layout>

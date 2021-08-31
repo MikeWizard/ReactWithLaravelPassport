@@ -1,21 +1,24 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import AuthContext from "../../store/auth-context";
 import AuthControl from "../Auth";
 const Layout = (props) => {
-  const authLink = props.loggedIn ? (
-    <button onClick={props.logout}>Logout</button>
+  const AuthCtx = useContext(AuthContext);
+  const authLink = AuthCtx.isAdmin() ? (
+    <button onClick={AuthCtx.logout}>Logout</button>
   ) : (
     <NavLink to="/login">Login</NavLink>
   );
   return (
-    <AuthControl>
+    // <AuthControl>
       <main>
-        <NavLink to="/books">Books</NavLink>
-        {authLink}
+        <NavLink to="/users">Users</NavLink> | 
+         {authLink}
         <hr />
-        <div>{props.children}</div>
+        <div >{props.children}</div>
       </main>
-    </AuthControl>
+    // </AuthControl>
   );
 };
 export default Layout;

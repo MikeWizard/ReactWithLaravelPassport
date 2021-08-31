@@ -16,7 +16,7 @@ const Login = (props) => {
           }).then((response) => {
             if (response.status === 200) {//204 cuando es spa con sanctum
               AuthCtx.loginSuccess(response.data);
-              console.log(response.data.data);
+              // console.log(response.data.data);
               setLoggedInPage("/users");
             }
           });
